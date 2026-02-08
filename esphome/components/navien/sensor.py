@@ -188,10 +188,16 @@ async def to_code(config):
         src = config[CONF_SRC]
     cg.add(var.set_link(link_var, src))
 
-    if CONF_TARGET_TEMPERATURE in config:
-        sens = await sensor.new_sensor(config[CONF_TARGET_TEMPERATURE])
-        cg.add(sens.set_icon(config[CONF_TARGET_TEMPERATURE].get(CONF_ICON, "mdi:coolant-temperature")))
-        cg.add(var.set_target_temp_sensor(sens))
+    if CONF_SH_TARGET_TEMPERATURE in config:
+        sens = await sensor.new_sensor(config[CONF_SH_TARGET_TEMPERATURE])
+        cg.add(sens.set_icon(config[CONF_SH_TARGET_TEMPERATURE].get(CONF_ICON, "mdi:coolant-temperature")))
+        cg.add(var.set_sh_target_temp_sensor(sens))
+    
+    
+    if CONF_DHW_TARGET_TEMPERATURE in config:
+        sens = await sensor.new_sensor(config[CONF_DHW_TARGET_TEMPERATURE])
+        cg.add(sens.set_icon(config[CONF_DHW_TARGET_TEMPERATURE].get(CONF_ICON, "mdi:coolant-temperature")))
+        cg.add(var.set_dhw_target_temp_sensor(sens))
     
     if CONF_INLET_TEMPERATURE in config:
         sens = await sensor.new_sensor(config[CONF_INLET_TEMPERATURE])
