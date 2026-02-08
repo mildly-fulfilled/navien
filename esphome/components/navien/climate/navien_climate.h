@@ -27,7 +27,7 @@ public:
    */
   virtual climate::ClimateTraits traits();
   virtual void control(const climate::ClimateCall &call);
-bool use_dhw_ = true;
+  bool use_dhw_ = true;
 };
 
 } // esphome
