@@ -169,7 +169,9 @@ namespace navien {
     void send_scheduled_recirculation_off_cmd();
 
   public:
-    void set_target_temp_sensor(sensor::Sensor *sensor) { target_temp_sensor = sensor; }
+    void set_sh_target_temp_sensor(sensor::Sensor *sensor) { sh_target_temp_sensor = sensor; }
+
+    void set_dhw_target_temp_sensor(sensor::Sensor *sensor) { dhw_target_temp_sensor = sensor; }
     void set_inlet_temp_sensor(sensor::Sensor *sensor) { inlet_temp_sensor = sensor; }
     void set_outlet_temp_sensor(sensor::Sensor *sensor) { outlet_temp_sensor = sensor; }
     void set_gas_target_temp_sensor(sensor::Sensor *sensor) { gas_target_temp_sensor = sensor; }
