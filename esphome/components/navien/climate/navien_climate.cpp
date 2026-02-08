@@ -38,11 +38,11 @@ void NavienClimate::control(const climate::ClimateCall &call){
     switch (use_dhw_) {
     case True
       ESP_LOGD(TAG, "Setting DHW target temperature to %f", target);
-      parent->send_set_temp_cmd(target);
+      parent->send_set_dhw_temp_cmd(target);
       break;
     case False
       ESP_LOGD(TAG, "Setting SH target temperature to %f", target);
-      parent->send_set_temp_cmd(target);
+      parent->send_set_sh_temp_cmd(target);
       break;
     }
   }
