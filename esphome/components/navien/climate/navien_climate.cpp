@@ -67,10 +67,11 @@ void NavienClimate::control(const climate::ClimateCall &call){
     this->parent = parent_;
     parent->set_climate(this);
   }
-}
 
 
-void NavienClimate::set_use_dhw(bool dhw){
-  this->use_dhw_ = dhw;
+  void NavienClimate::set_use_dhw(bool dhw){
+    this->use_dhw_ = dhw;
+  }
+
 }
 }
