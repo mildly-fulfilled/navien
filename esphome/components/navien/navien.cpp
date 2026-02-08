@@ -128,7 +128,8 @@ namespace navien {
   void Navien::on_gas(const GAS_DATA & gas, uint8_t src){
     ESP_LOGD(TAG, "SRC:0x%02X Received Gas Temp: 0x%02X, Inlet: 0x%02X, Outlet: 0x%02X",
        src,
-       gas.set_temp,
+       gas.sh_set_temp,
+       gas.dhw_set_temp,
        gas.inlet_temp,
        gas.outlet_temp
     );
