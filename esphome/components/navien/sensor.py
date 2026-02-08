@@ -20,8 +20,7 @@ from esphome.const import (
     CONF_LONGITUDE,
     CONF_SENSOR,
     CONF_NAME,
-    CONF_SH_TARGET_TEMPERATURE,
-    CONF_DHW_TARGET_TEMPERATURE,
+
     
     DEVICE_CLASS_CONNECTIVITY,
     DEVICE_CLASS_GAS,
@@ -38,6 +37,8 @@ from esphome.const import (
     UNIT_HOUR
 )
 
+CONF_SH_TARGET_TEMPERATURE = "sh_target_temperature"
+CONF_DHW_TARGET_TEMPERATURE = "sh_dhw_target_temperature"
 
 UNIT_LPM  = "l/m"
 UNIT_BTU  = "BTU"
