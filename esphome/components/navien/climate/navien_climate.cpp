@@ -18,7 +18,7 @@ void NavienClimate::setup(){
 }
   
 void NavienClimate::dump_config(){
-  ESP_LOGD(TAG, "Use for space heating control: %s", this->sh_mode
+  ESP_LOGCONFIG(TAG, "DHW mode: %s", this->use_dhw_ ? "true" : "false");
 }
 
 climate::ClimateTraits NavienClimate::traits(){
@@ -60,5 +60,10 @@ void NavienClimate::control(const climate::ClimateCall &call){
     this->parent = parent_;
     parent->set_climate(this);
   }
+}
+
+
+void NavienClimate::set_use_dhw(bool dhw){
+  this->use_dhw_ = dhw;
 }
 }
