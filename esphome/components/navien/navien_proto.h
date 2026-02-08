@@ -187,7 +187,7 @@ typedef struct {
    */
   uint8_t system_power;
   uint8_t operating_state;
-  uint8_t set_temp;
+  uint8_t dhw_set_temp;
   uint8_t outlet_temp;
   uint8_t inlet_temp;
   uint8_t unknown_14; //0x00 on NCB-H
