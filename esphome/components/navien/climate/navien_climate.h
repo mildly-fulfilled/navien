@@ -20,12 +20,14 @@ public:
   void dump_config() override;
 
   void set_parent(Navien * parent_);
+  void set_use_dhw(bool dhw);
 
   /**
    * Abstract methods of the Climate class that must be overriden
    */
   virtual climate::ClimateTraits traits();
   virtual void control(const climate::ClimateCall &call);
+bool use_dhw_ = true;
 };
 
 } // esphome
