@@ -236,9 +236,9 @@ typedef struct {
   uint8_t  controller_version_hi;
 
   uint8_t  panel_version_lo;
-  uint8_t  panel_version_hi;
+  uint8_t  sh_set_temp;
 
-  uint8_t  set_temp;
+  uint8_t  dhw_set_temp;
   uint8_t  outlet_temp;
   uint8_t  inlet_temp;
   uint8_t  sh_outlet_temp; // combi (and space heat?) models
