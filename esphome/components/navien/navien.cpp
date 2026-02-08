@@ -225,7 +225,7 @@ void NavienBase::send_set_sh_temp_cmd(float temp) {
     }
 
     // Update the climate control with the current target temperature
-    if (this->climate != nullptr){
+/*    if (this->climate != nullptr){
       switch (this->climate->use_dhw_) {
         case true:
           this->climate->current_temperature = this->state.water.outlet_temp;
@@ -239,7 +239,7 @@ void NavienBase::send_set_sh_temp_cmd(float temp) {
           break;
       }
     }
-
+*/
     if (this->recirc_mode_sensor != nullptr) {
       this->recirc_mode_sensor->publish_state(device_recirc_mode_to_str(this->state.recirculation));
     }
@@ -296,6 +296,21 @@ void NavienBase::send_set_sh_temp_cmd(float temp) {
       this->dhw_target_temp_sensor->publish_state(this->state.gas.dhw_set_temp);
 
     // Update the climate control with the current target temperature
+    if (this->climate != nullptr){
+      switch (this->climate->use_dhw_) {
+        case true:
+          this->climate->current_temperature = this->state.gas.outlet_temp;
+          this->climate->target_temperature = this->state.gas.dhw_set_temp;
+          this->climate->publish_state();
+          break;
+        case false:
+          this->climate->current_temperature = this->state.gas.outlet_temp;
+          this->climate->target_temperature = this->state.gas.sh_set_temp;
+          this->climate->publish_state();
+          break;
+      }
+    }
+
 //    if (this->climate != nullptr){
       //    this->climate->current_temperature = this->state.gas.outlet_temp * 9.f / 5.f + 32.f;
       //this->climate->target_temperature = this->state.gas.set_temp * 9.f / 5.f + 32.f;
