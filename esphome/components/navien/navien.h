@@ -102,7 +102,7 @@ namespace navien {
 
   typedef struct{
     struct{
-      float set_temp;
+      float dhw_set_temp;
       float outlet_temp;
       float inlet_temp;
       float flow_lpm;
@@ -112,7 +112,8 @@ namespace navien {
       bool recirc_running;
     } water;
     struct{
-      float  set_temp;
+      float  sh_set_temp;
+      float  dhw_set_temp;
       float  outlet_temp;
       float  inlet_temp;
       uint16_t accumulated_gas_usage;
@@ -224,8 +225,8 @@ namespace navien {
     /**
      * Sensor definitions
      */
-
-    sensor::Sensor *target_temp_sensor = nullptr;
+    sensor::Sensor *sh_target_temp_sensor = nullptr;
+    sensor::Sensor *dhw_target_temp_sensor = nullptr;
     sensor::Sensor *outlet_temp_sensor = nullptr;
     sensor::Sensor *inlet_temp_sensor = nullptr;
     sensor::Sensor *gas_target_temp_sensor = nullptr;
