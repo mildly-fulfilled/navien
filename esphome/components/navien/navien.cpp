@@ -297,7 +297,7 @@ void NavienBase::send_set_sh_temp_cmd(float temp) {
 
     // Update the climate control with the current target temperature
     if (this->climate != nullptr){
-      auto nc = dynamic_cast<NavienClimate *>(this->climate);
+      auto nc = static_cast<NavienClimate *>(this->climate);
       if (nc != nullptr) {
       switch (this->climate->use_dhw_) {
         case true:
