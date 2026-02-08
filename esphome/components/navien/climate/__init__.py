@@ -18,6 +18,7 @@ CONFIG_SCHEMA = cv.All(
     .extend(
         {
             cv.Required(CONF_ID): cv.declare_id(NavienClimate),
+            cv.Optional("dhw", default=False): cv.boolean,
             cv.GenerateID(NAVIEN_CONFIG_ID): cv.use_id(Navien),
         }
     )
@@ -30,4 +31,5 @@ async def to_code(config):
 
     paren = await cg.get_variable(config[NAVIEN_CONFIG_ID])
     cg.add(var.set_parent(paren))
+    cg.add(var.set_use_dhw(config["dhw"]))
 
