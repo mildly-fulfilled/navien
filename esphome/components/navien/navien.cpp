@@ -38,9 +38,15 @@ namespace navien {
     }
   }
 
-  void NavienBase::send_set_temp_cmd(float temp) {
+void NavienBase::send_set_sh_temp_cmd(float temp) {
     if (this->link_ != nullptr) {
-      this->link_->send_set_temp_cmd(temp);
+      this->link_->send_set_sh_temp_cmd(temp);
+    }
+  }
+
+  void NavienBase::send_set_dhw_temp_cmd(float temp) {
+    if (this->link_ != nullptr) {
+      this->link_->send_set_dhw_temp_cmd(temp);
     }
   }
 
