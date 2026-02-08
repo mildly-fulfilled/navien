@@ -18,6 +18,7 @@ void NavienClimate::setup(){
 }
   
 void NavienClimate::dump_config(){
+  ESP_LOGD(TAG, "Use for space heating control: %s", this->sh_mode
 }
 
 climate::ClimateTraits NavienClimate::traits(){
