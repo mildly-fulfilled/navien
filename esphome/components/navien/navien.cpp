@@ -64,7 +64,7 @@ namespace navien {
   void Navien::on_water(const WATER_DATA & water, uint8_t src){
     ESP_LOGD(TAG, "SRC:0x%02X Received Temp: 0x%02X, Inlet: 0x%02X, Outlet: 0x%02X, Flow: 0x%02X, Sys Power: 0x%02X, Sys Status: 0x%02X, Recirc Enabled: 0x%02X",
              src,
-             water.set_temp,
+             water.dhw_set_temp,
              water.inlet_temp,
              water.outlet_temp,
              water.water_flow,
@@ -101,7 +101,7 @@ namespace navien {
     // of whether we're connected to navien or not
     this->received_cnt++;
     this->state.water.boiler_active = water.boiler_active & 0x01;
-    this->state.water.set_temp = NavienLink::t2c(water.set_temp);
+    this->state.water.dhw_set_temp = NavienLink::t2c(water.dhw_set_temp);
     this->state.water.outlet_temp = NavienLink::t2c(water.outlet_temp);
     this->state.water.inlet_temp = NavienLink::t2c(water.inlet_temp);
     this->state.water.flow_lpm = NavienLink::flow2lpm(water.water_flow);
@@ -146,7 +146,8 @@ namespace navien {
     // of whether we're connected to navien or not
     this->received_cnt++;
 
-    this->state.gas.set_temp    = NavienLink::t2c(gas.set_temp);
+    this->state.gas.sh_set_temp = NavienLink::t2c(gas.sh_set_temp);
+    this->state.gas.dhw_set_temp = NavienLink::t2c(gas.dhw_set_temp);
     this->state.gas.outlet_temp = NavienLink::t2c(gas.outlet_temp);
     this->state.gas.inlet_temp = NavienLink::t2c(gas.inlet_temp);
     this->state.gas.sh_outlet_temp = NavienLink::t2c(gas.sh_outlet_temp);
@@ -187,7 +188,7 @@ namespace navien {
   }
 
   void Navien::on_error(){
-    this->target_temp_sensor->publish_state(0);
+    this->dhw_target_temp_sensor->publish_state(0);
     this->outlet_temp_sensor->publish_state(0);
     this->inlet_temp_sensor->publish_state(0);
     this->water_flow_sensor->publish_state(0);
@@ -219,7 +220,7 @@ namespace navien {
     // Update the climate control with the current target temperature
     if (this->climate != nullptr){
       this->climate->current_temperature = this->state.water.outlet_temp;
-      this->climate->target_temperature = this->state.water.set_temp;
+      this->climate->target_temperature = this->dhw_state.water.set_temp;
       this->climate->publish_state();
     }
 
@@ -259,8 +260,8 @@ namespace navien {
       this->allow_recirc_switch->publish_state(this->state.water.scheduled_recirc_allowed);
     }
 
-    if (this->target_temp_sensor != nullptr)
-      this->target_temp_sensor->publish_state(this->state.water.set_temp);
+    if (this->dhw_target_temp_sensor != nullptr)
+      this->dhw_target_temp_sensor->publish_state(this->state.water.dhw_set_temp);
     if (this->outlet_temp_sensor != nullptr)
       this->outlet_temp_sensor->publish_state(this->state.water.outlet_temp);
     if (this->inlet_temp_sensor != nullptr)
@@ -272,8 +273,11 @@ namespace navien {
   }
 
   void Navien::update_gas_sensors(){
-    if (this->target_temp_sensor != nullptr)
-      this->target_temp_sensor->publish_state(this->state.gas.set_temp);
+    if (this->sh_target_temp_sensor != nullptr)
+      this->sh_target_temp_sensor->publish_state(this->state.gas.sh_set_temp);
+
+    if (this->dhw_target_temp_sensor != nullptr)
+      this->dhw_target_temp_sensor->publish_state(this->state.gas.dhw_set_temp);
 
     // Update the climate control with the current target temperature
     if (this->climate != nullptr){
