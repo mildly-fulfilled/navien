@@ -205,10 +205,19 @@ void NavienLink::send_hot_button_cmd(){
 }
   
 
-void NavienLink::send_set_temp_cmd(float temp){
+void NavienLink::send_set_dhw_temp_cmd(float temp){
   uint8_t cmd[19];
   memcpy(cmd, SET_TEMP_CMD_TEMPLATE, sizeof(SET_TEMP_CMD_TEMPLATE));
   cmd[9] = temp * 2 + 0.5;
+  cmd[18] = NavienLink::checksum(cmd, sizeof(SET_TEMP_CMD_TEMPLATE) - 1, CHECKSUM_SEED_62);
+
+  NavienLink::print_buffer(cmd, sizeof(SET_TEMP_CMD_TEMPLATE));
+  this->send_cmd(cmd, sizeof(SET_TEMP_CMD_TEMPLATE));
+}
+
+void NavienLink::send_set_sh_temp_cmd(float temp){
+  uint8_t cmd[19];
+  memcpy(cmd, SET_TEMP_CMD_TEMPLATE, sizeof(SET_TEMP_CMD_TEMPLATE));
   cmd[10] = temp * 2 + 0.5;
   cmd[18] = NavienLink::checksum(cmd, sizeof(SET_TEMP_CMD_TEMPLATE) - 1, CHECKSUM_SEED_62);
 
