@@ -38,7 +38,7 @@ from esphome.const import (
 )
 
 CONF_SH_TARGET_TEMPERATURE = "sh_target_temperature"
-CONF_DHW_TARGET_TEMPERATURE = "sh_dhw_target_temperature"
+CONF_DHW_TARGET_TEMPERATURE = "dhw_target_temperature"
 
 UNIT_LPM  = "l/m"
 UNIT_BTU  = "BTU"
