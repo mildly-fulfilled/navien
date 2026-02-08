@@ -299,7 +299,7 @@ void NavienBase::send_set_sh_temp_cmd(float temp) {
     if (this->climate != nullptr){
       auto nc = static_cast<NavienClimate *>(this->climate);
       if (nc != nullptr) {
-      switch (this->climate->use_dhw_) {
+      switch (nc->use_dhw_) {
         case true:
           this->climate->current_temperature = this->state.gas.outlet_temp;
           this->climate->target_temperature = this->state.gas.dhw_set_temp;
