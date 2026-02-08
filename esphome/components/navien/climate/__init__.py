@@ -10,7 +10,7 @@ from esphome.components.navien.sensor import NAVIEN_CONFIG_ID, Navien
 navien_ns = cg.esphome_ns.namespace("navien")
 
 DEPENDENCIES = ["climate"]
-MULTI_CONF = true
+MULTI_CONF = True
 
 NavienClimate = navien_ns.class_("NavienClimate", climate.Climate, cg.Component)
 
