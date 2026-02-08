@@ -20,7 +20,8 @@ from esphome.const import (
     CONF_LONGITUDE,
     CONF_SENSOR,
     CONF_NAME,
-    CONF_TARGET_TEMPERATURE,
+    CONF_SH_TARGET_TEMPERATURE,
+    CONF_DHW_TARGET_TEMPERATURE,
     
     DEVICE_CLASS_CONNECTIVITY,
     DEVICE_CLASS_GAS,
@@ -71,8 +72,14 @@ CONFIG_SCHEMA = cv.All(
             cv.GenerateID(): cv.declare_id(Navien),
             
             cv.Optional(CONF_NAME, default= 'Navien' ): cv.string_strict,
-
-            cv.Optional(CONF_TARGET_TEMPERATURE): sensor.sensor_schema(
+            
+            cv.Optional(CONF_SH_TARGET_TEMPERATURE): sensor.sensor_schema(
+                unit_of_measurement=UNIT_CELSIUS,
+                accuracy_decimals=2,
+            ),
+            
+            
+            cv.Optional(CONF_DHW_TARGET_TEMPERATURE): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
                 accuracy_decimals=2,
             ),
