@@ -221,7 +221,7 @@ namespace navien {
     // Update the climate control with the current target temperature
     if (this->climate != nullptr){
       this->climate->current_temperature = this->state.water.outlet_temp;
-      this->climate->target_temperature = this->dhw_state.water.set_temp;
+      this->climate->target_temperature = this->state.water.dhw_set_temp;
       this->climate->publish_state();
     }
 
