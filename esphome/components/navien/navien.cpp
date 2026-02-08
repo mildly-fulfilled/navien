@@ -304,11 +304,13 @@ void NavienBase::send_set_sh_temp_cmd(float temp) {
           this->climate->current_temperature = this->state.gas.outlet_temp;
           this->climate->target_temperature = this->state.gas.dhw_set_temp;
           this->climate->publish_state();
+          ESP_LOGD(TAG, "Setting DHW Climate State");
           break;
         case false:
           this->climate->current_temperature = this->state.gas.outlet_temp;
           this->climate->target_temperature = this->state.gas.sh_set_temp;
           this->climate->publish_state();
+          ESP_LOGD(TAG, "Setting SH Climate State");
           break;
       }
       }
