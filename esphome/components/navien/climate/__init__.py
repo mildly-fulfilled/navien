@@ -7,13 +7,11 @@ from esphome.components import climate
 
 from esphome.components.navien.sensor import NAVIEN_CONFIG_ID, Navien
 
-navien_dhw_ns = cg.esphome_ns.namespace("navien_dhw")
-navien_sh_ns = cg.esphome_ns.namespace("navein_sh")
+navien_ns = cg.esphome_ns.namespace("navien")
 
 DEPENDENCIES = ["climate"]
 
-NavienDHWClimate = navien_dhw_ns.class_("NavienClimate", climate.Climate, cg.Component)
-NavienSHClimate = navien.sh_ns.class_("NavienCliamte", climate.Climate, cg.Component)
+NavienClimate = navien_ns.class_("NavienClimate", climate.Climate, cg.Component)
 
 CONFIG_SCHEMA = cv.All(
     climate.climate_schema(NavienClimate)
