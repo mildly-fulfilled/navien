@@ -216,12 +216,12 @@ namespace navien {
      */
     void set_allow_recirc_switch(switch_::Switch * rs){allow_recirc_switch = rs;}
 
-    void set_climate(climate::Climate * c){climate = c;}
+    void add_climate(climate::Climate * c){climates.push_back(c);}
 
     /**
-     * Sets the climate component that will be receiving temperature updates
+     * Gets the list of climate components
      */
-    //void set_climate(switch_::Switch * ps){power_switch = ps;}
+    const std::list<climate::Climate *>& get_climates() const { return climates; }
 
 
   protected:
@@ -263,7 +263,7 @@ namespace navien {
 
     switch_::Switch *power_switch = nullptr;
     switch_::Switch *allow_recirc_switch = nullptr;
-    climate::Climate *climate = nullptr;
+    std::list<climate::Climate *> climates;
 
     NavienLinkEsp *link_;
     uint8_t src_;

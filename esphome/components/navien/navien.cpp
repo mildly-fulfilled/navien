@@ -248,17 +248,21 @@ void NavienBase::send_set_sh_temp_cmd(float temp) {
     case POWER_ON:
       if (this->power_switch != nullptr)
         this->power_switch->publish_state(true);
-      if (this->climate != nullptr){
-        this->climate->mode = climate::ClimateMode::CLIMATE_MODE_HEAT;
-        this->climate->publish_state();
+      for (auto climate : this->climates){
+        if (climate != nullptr){
+          climate->mode = climate::ClimateMode::CLIMATE_MODE_HEAT;
+          climate->publish_state();
+        }
       }
       break;
     default:
       if (this->power_switch != nullptr)
         this->power_switch->publish_state(false);
-      if (this->climate != nullptr){
-        this->climate->mode = climate::ClimateMode::CLIMATE_MODE_OFF;
-        this->climate->publish_state();
+      for (auto climate : this->climates){
+        if (climate != nullptr){
+          climate->mode = climate::ClimateMode::CLIMATE_MODE_OFF;
+          climate->publish_state();
+        }
       }
     }
 
@@ -295,33 +299,28 @@ void NavienBase::send_set_sh_temp_cmd(float temp) {
     if (this->dhw_target_temp_sensor != nullptr)
       this->dhw_target_temp_sensor->publish_state(this->state.gas.dhw_set_temp);
 
-    // Update the climate control with the current target temperature
-    if (this->climate != nullptr){
-      auto nc = static_cast<NavienClimate *>(this->climate);
-      if (nc != nullptr) {
-      switch (nc->use_dhw_) {
-        case true:
-          this->climate->current_temperature = this->state.gas.outlet_temp;
-          this->climate->target_temperature = this->state.gas.dhw_set_temp;
-          this->climate->publish_state();
-          ESP_LOGD(TAG, "Setting DHW Climate State");
-          break;
-        case false:
-          this->climate->current_temperature = this->state.gas.outlet_temp;
-          this->climate->target_temperature = this->state.gas.sh_set_temp;
-          this->climate->publish_state();
-          ESP_LOGD(TAG, "Setting SH Climate State");
-          break;
+    // Update the climate controls with the current target temperature
+    for (auto climate : this->climates) {
+      if (climate != nullptr){
+        auto nc = static_cast<NavienClimate *>(climate);
+        if (nc != nullptr) {
+          switch (nc->use_dhw_) {
+            case true:
+              climate->current_temperature = this->state.gas.outlet_temp;
+              climate->target_temperature = this->state.gas.dhw_set_temp;
+              climate->publish_state();
+              ESP_LOGD(TAG, "Setting DHW Climate State");
+              break;
+            case false:
+              climate->current_temperature = this->state.gas.outlet_temp;
+              climate->target_temperature = this->state.gas.sh_set_temp;
+              climate->publish_state();
+              ESP_LOGD(TAG, "Setting SH Climate State");
+              break;
+          }
+        }
       }
-      }
-      
     }
-
-//    if (this->climate != nullptr){
-      //    this->climate->current_temperature = this->state.gas.outlet_temp * 9.f / 5.f + 32.f;
-      //this->climate->target_temperature = this->state.gas.set_temp * 9.f / 5.f + 32.f;
-  //    this->climate->publish_state();
- //   }
   
   if (this->outlet_temp_sensor != nullptr)
     this->outlet_temp_sensor->publish_state(this->state.gas.outlet_temp);

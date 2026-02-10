@@ -65,7 +65,7 @@ void NavienClimate::control(const climate::ClimateCall &call){
 
   void NavienClimate::set_parent(Navien * parent_){
     this->parent = parent_;
-    parent->set_climate(this);
+    parent->add_climate(this);
   }
 
 
