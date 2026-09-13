@@ -1,5 +1,6 @@
 #include <cmath>
 #include <string>
+#include <cstring>
 
 #include "esphome.h"
 #include "esphome/core/log.h"
@@ -81,6 +82,8 @@ void NavienBase::send_scheduled_recirculation_off_cmd() {
   void Navien::setup() {
     NavienBase::setup();
     this->state.power = POWER_OFF;
+    std::memset(last_water_data, 0, sizeof(last_water_data));
+    std::memset(last_gas_data, 0, sizeof(last_gas_data));
   }
 
   void Navien::on_water(const WATER_DATA & water, uint8_t src){
@@ -101,6 +104,9 @@ void NavienBase::send_scheduled_recirculation_off_cmd() {
              water.error_code_hi,
              water.error_code_lo,
              water.error_level);
+
+    // Store raw packet data for hex output
+    std::memcpy(last_water_data, &water, sizeof(WATER_DATA));
 
     if (water.system_power & POWER_STATUS_ON_OFF_MASK){
       state.power = POWER_ON;
@@ -179,6 +185,9 @@ void NavienBase::send_scheduled_recirculation_off_cmd() {
        gas.current_gas_lo,
        gas.heat_capacity
     );
+
+    // Store raw packet data for hex output
+    std::memcpy(last_gas_data, &gas, sizeof(GAS_DATA));
 
     // Update the counter that will be used in assessment
     // of whether we're connected to navien or not
@@ -267,7 +276,11 @@ void NavienBase::send_scheduled_recirculation_off_cmd() {
       this->heating_mode_sensor,
       this->device_type_sensor,
       this->operating_state_sensor,
-      this->recirc_mode_sensor
+      this->recirc_mode_sensor,
+      this->water_data_sensor,
+      this->gas_data_sensor,
+      this->water_data_hex_sensor,
+      this->gas_data_hex_sensor
     };
 
     for (text_sensor::TextSensor *t : text_sensors) {
@@ -372,6 +385,14 @@ void NavienBase::send_scheduled_recirculation_off_cmd() {
     if (this->error_level_sensor != nullptr){
         this->error_level_sensor->publish_state(this->state.water.error_level);
     }
+
+    if (this->water_data_hex_sensor != nullptr) {
+      char hex_buffer[HEX_DUMP_BUFFER_SIZE];
+      size_t len = format_water_data_hex(hex_buffer, sizeof(hex_buffer), last_water_data);
+      if (len > 0) {
+        this->water_data_hex_sensor->publish_state(std::string(hex_buffer, len));
+      }
+    }
   }
 
   void Navien::update_gas_sensors(){
@@ -385,11 +406,11 @@ void NavienBase::send_scheduled_recirculation_off_cmd() {
     }
 #endif
   
-  if (this->outlet_temp_sensor != nullptr)
-    this->outlet_temp_sensor->publish_state(this->state.gas.outlet_temp);
+    if (this->outlet_temp_sensor != nullptr)
+      this->outlet_temp_sensor->publish_state(this->state.gas.outlet_temp);
 
-  if (this->inlet_temp_sensor != nullptr)
-      this->inlet_temp_sensor->publish_state(this->state.gas.inlet_temp);
+    if (this->inlet_temp_sensor != nullptr)
+        this->inlet_temp_sensor->publish_state(this->state.gas.inlet_temp);
 
     if (this->gas_total_sensor != nullptr)
       this->gas_total_sensor->publish_state(this->state.gas.accumulated_gas_usage);
@@ -426,6 +447,50 @@ void NavienBase::send_scheduled_recirculation_off_cmd() {
       this->controller_version_sensor->publish_state(this->state.controller_version);
     if (this->panel_version_sensor != nullptr)
       this->panel_version_sensor->publish_state(this->state.panel_version);
+
+    if (this->gas_data_hex_sensor != nullptr) {
+      char hex_buffer[HEX_DUMP_BUFFER_SIZE];
+      size_t len = format_gas_data_hex(hex_buffer, sizeof(hex_buffer), last_gas_data);
+      if (len > 0) {
+        this->gas_data_hex_sensor->publish_state(std::string(hex_buffer, len));
+      }
+    }
+  }
+
+  size_t Navien::format_water_data_hex(char *buf_out, size_t buf_len, const uint8_t *data) {
+    if (buf_len < 3) return 0;
+    
+    size_t written = 0;
+    size_t data_len = sizeof(WATER_DATA);
+    
+    for (size_t i = 0; i < data_len && written + 3 <= buf_len; i++) {
+      written += snprintf(buf_out + written, buf_len - written, "%02X ", data[i]);
+    }
+    
+    // Remove trailing space if any bytes were written
+    if (written > 0 && buf_out[written - 1] == ' ') {
+      written--;
+    }
+    
+    return written;
+  }
+
+  size_t Navien::format_gas_data_hex(char *buf_out, size_t buf_len, const uint8_t *data) {
+    if (buf_len < 3) return 0;
+    
+    size_t written = 0;
+    size_t data_len = sizeof(GAS_DATA);
+    
+    for (size_t i = 0; i < data_len && written + 3 <= buf_len; i++) {
+      written += snprintf(buf_out + written, buf_len - written, "%02X ", data[i]);
+    }
+    
+    // Remove trailing space if any bytes were written
+    if (written > 0 && buf_out[written - 1] == ' ') {
+      written--;
+    }
+    
+    return written;
   }
 
   void Navien::loop() {
