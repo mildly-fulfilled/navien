@@ -13,6 +13,8 @@ CONF_PANEL_VERSION = "panel_version"
 CONF_CONTROLLER_VERSION = "controller_version"
 CONF_WATER_DATA = "water_data"
 CONF_GAS_DATA = "gas_data"
+CONF_WATER_DATA_HEX = "water_data_hex"
+CONF_GAS_DATA_HEX = "gas_data_hex"
 
 _DEFAULT_ICONS = {
     CONF_HEATING_MODE: "mdi:autorenew",
@@ -22,6 +24,8 @@ _DEFAULT_ICONS = {
     CONF_CONTROLLER_VERSION: "mdi:chip",
     CONF_WATER_DATA: "mdi:water",
     CONF_GAS_DATA: "mdi:fire",
+    CONF_WATER_DATA_HEX: "mdi:water",
+    CONF_GAS_DATA_HEX: "mdi:fire",
 }
 
 def _set_default_icon(config):
@@ -53,6 +57,10 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(CONF_WATER_DATA): cv.boolean,
 
             cv.Optional(CONF_GAS_DATA): cv.boolean,
+
+            cv.Optional(CONF_WATER_DATA_HEX): cv.boolean,
+
+            cv.Optional(CONF_GAS_DATA_HEX): cv.boolean,
         }
     ),
     _set_default_icon,
@@ -82,3 +90,9 @@ async def to_code(config):
 
     if config.get(CONF_GAS_DATA, False):
         cg.add(paren.set_gas_data_sensor(var))
+
+    if config.get(CONF_WATER_DATA_HEX, False):
+        cg.add(paren.set_water_data_hex_sensor(var))
+
+    if config.get(CONF_GAS_DATA_HEX, False):
+        cg.add(paren.set_gas_data_hex_sensor(var))
