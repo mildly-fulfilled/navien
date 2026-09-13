@@ -31,6 +31,8 @@ namespace navien {
   // Buffer size for water_data and gas_data text output
   const size_t WATER_DATA_BUFFER_SIZE = 512;
   const size_t GAS_DATA_BUFFER_SIZE = 768;
+  // Buffer for raw hex dumps (max packet size ~100 bytes * 3 chars per byte = 300)
+  const size_t HEX_DUMP_BUFFER_SIZE = 512;
 
   typedef enum _DEVICE_POWER_STATE{
     POWER_OFF,
@@ -202,6 +204,8 @@ namespace navien {
     void set_error_level_sensor(sensor::Sensor *sensor) { error_level_sensor = sensor; }
     void set_water_data_sensor(text_sensor::TextSensor *sensor) { water_data_sensor = sensor; }
     void set_gas_data_sensor(text_sensor::TextSensor *sensor) { gas_data_sensor = sensor; }
+    void set_water_data_hex_sensor(text_sensor::TextSensor *sensor) { water_data_hex_sensor = sensor; }
+    void set_gas_data_hex_sensor(text_sensor::TextSensor *sensor) { gas_data_hex_sensor = sensor; }
 
 #ifdef USE_SWITCH
     /**
@@ -262,6 +266,8 @@ namespace navien {
     text_sensor::TextSensor *recirc_mode_sensor = nullptr;
     text_sensor::TextSensor *water_data_sensor = nullptr;
     text_sensor::TextSensor *gas_data_sensor = nullptr;
+    text_sensor::TextSensor *water_data_hex_sensor = nullptr;
+    text_sensor::TextSensor *gas_data_hex_sensor = nullptr;
 
     binary_sensor::BinarySensor *boiler_active_sensor = nullptr;
     binary_sensor::BinarySensor *conn_status_sensor = nullptr;
@@ -350,10 +356,32 @@ namespace navien {
      */
     size_t format_gas_data(char *buf_out, size_t buf_len);
 
+    /**
+     * Helper function to format water data raw hex to static buffer (C-style)
+     * buf_out: output buffer (minimum HEX_DUMP_BUFFER_SIZE bytes)
+     * buf_len: size of output buffer
+     * data: pointer to WATER_DATA struct
+     * Returns: number of bytes written (excluding null terminator)
+     */
+    size_t format_water_data_hex(char *buf_out, size_t buf_len, const uint8_t *data);
+
+    /**
+     * Helper function to format gas data raw hex to static buffer (C-style)
+     * buf_out: output buffer (minimum HEX_DUMP_BUFFER_SIZE bytes)
+     * buf_len: size of output buffer
+     * data: pointer to GAS_DATA struct
+     * Returns: number of bytes written (excluding null terminator)
+     */
+    size_t format_gas_data_hex(char *buf_out, size_t buf_len, const uint8_t *data);
+
   protected:
     // Data, extracted from gas and water packers and stored
     // Once the "update" is called this data gets reported to readers.
     NAVIEN_STATE state = {};
+    
+    // Store last raw packet data for hex output
+    uint8_t last_water_data[sizeof(WATER_DATA)];
+    uint8_t last_gas_data[sizeof(GAS_DATA)];
 
   protected:
     /**
