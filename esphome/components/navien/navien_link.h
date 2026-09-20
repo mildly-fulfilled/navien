@@ -136,6 +136,7 @@ public:
   void send_scheduled_recirculation_on_cmd();
   void send_scheduled_recirculation_off_cmd();
   void send_dhw_set_temp_cmd(float temp);
+  void send_sh_set_temp_cmd(float temp);
 
   
 public:
