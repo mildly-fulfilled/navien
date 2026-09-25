@@ -23,7 +23,7 @@ public:
   void dump_config() override;
 
   void set_parent(Navien * parent_);
-  void set_dhw(bool dhw) { this->dhw_ dhw; }
+  void set_dhw(bool dhw) { this->dhw_ = dhw; }
 
   /**
    * Abstract methods of the Climate class that must be overriden
