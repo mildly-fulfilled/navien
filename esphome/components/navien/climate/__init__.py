@@ -20,7 +20,7 @@ CONFIG_SCHEMA = cv.All(
     .extend(
         {
             cv.Required(CONF_ID): cv.declare_id(NavienClimate),
-            cv.Optional(CONF_DHW, default=true): cv.boolean
+            cv.Optional(CONF_DHW, default=true): cv.boolean,
             cv.GenerateID(NAVIEN_CONFIG_ID): cv.use_id(Navien),
         }
     )
