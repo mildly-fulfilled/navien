@@ -29,7 +29,8 @@ CONFIG_SCHEMA = cv.ensure_list(
 
 async def to_code(config):
     for conf in config:
-        var = await climate.new_climate(config)
+     #   var = await climate.new_climate(config)
+        var = cg.new_Pvariable(conf[CONF_ID])
         await cg.register_component(var, config)
 
         paren = await cg.get_variable(config[NAVIEN_CONFIG_ID])
