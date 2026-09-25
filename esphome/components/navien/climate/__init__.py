@@ -31,10 +31,10 @@ async def to_code(config):
     for conf in config:
      #   var = await climate.new_climate(config)
         var = cg.new_Pvariable(conf[CONF_ID])
-        await cg.register_component(var, config)
+        await cg.register_component(var, conf)
 
-        paren = await cg.get_variable(config[NAVIEN_CONFIG_ID])
+        paren = await cg.get_variable(conf[NAVIEN_CONFIG_ID])
         cg.add(var.set_parent(paren))
-        dhw = config[CONF_DHW]
+        dhw = conf[CONF_DHW]
         cg.add(var.set_dhw(dhw))
     
