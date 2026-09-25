@@ -16,8 +16,7 @@ DEPENDENCIES = ["climate"]
 NavienClimate = navien_ns.class_("NavienClimate", climate.Climate, cg.Component)
 
 CONFIG_SCHEMA = cv.ensure_list(
-    climate.climate_schema(NavienClimate)
-    .extend(
+    climate.climate_schema(NavienClimate).extend(
         {
             cv.Required(CONF_ID): cv.declare_id(NavienClimate),
             cv.Optional(CONF_DHW, default=True): cv.boolean,
@@ -25,7 +24,7 @@ CONFIG_SCHEMA = cv.ensure_list(
         }
     )
     .extend(cv.COMPONENT_SCHEMA)
-    );
+)
 
 async def to_code(config):
     for conf in config:
