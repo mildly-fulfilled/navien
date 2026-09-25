@@ -15,7 +15,7 @@ DEPENDENCIES = ["climate"]
 
 NavienClimate = navien_ns.class_("NavienClimate", climate.Climate, cg.Component)
 
-CONFIG_SCHEMA = cv.All(
+CONFIG_SCHEMA = cv.ensure_list(
     climate.climate_schema(NavienClimate)
     .extend(
         {
@@ -28,11 +28,12 @@ CONFIG_SCHEMA = cv.All(
     );
 
 async def to_code(config):
-    var = await climate.new_climate(config)
-    await cg.register_component(var, config)
+    for conf in config:
+        var = await climate.new_climate(config)
+        await cg.register_component(var, config)
 
-    paren = await cg.get_variable(config[NAVIEN_CONFIG_ID])
-    cg.add(var.set_parent(paren))
-    dhw = config[CONF_DHW]
-    cg.add(var.set_dhw(dhw))
+        paren = await cg.get_variable(config[NAVIEN_CONFIG_ID])
+        cg.add(var.set_parent(paren))
+        dhw = config[CONF_DHW]
+        cg.add(var.set_dhw(dhw))
     
