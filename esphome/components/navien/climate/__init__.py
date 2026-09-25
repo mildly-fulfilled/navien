@@ -7,6 +7,8 @@ from esphome.components import climate
 
 from esphome.components.navien.sensor import NAVIEN_CONFIG_ID, Navien
 
+CONF_DHW = "dhw"
+
 navien_ns = cg.esphome_ns.namespace("navien")
 
 DEPENDENCIES = ["climate"]
@@ -18,6 +20,7 @@ CONFIG_SCHEMA = cv.All(
     .extend(
         {
             cv.Required(CONF_ID): cv.declare_id(NavienClimate),
+            cv.Optional(CONF_DHW, default=true): cv.boolean
             cv.GenerateID(NAVIEN_CONFIG_ID): cv.use_id(Navien),
         }
     )
@@ -30,4 +33,6 @@ async def to_code(config):
 
     paren = await cg.get_variable(config[NAVIEN_CONFIG_ID])
     cg.add(var.set_parent(paren))
+    dhw = config[CONF_DHW]
+    cg.add(var.set_dhw(dhw))
     
