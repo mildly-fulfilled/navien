@@ -203,8 +203,6 @@ namespace navien {
     void set_other_navilink_installed_sensor(binary_sensor::BinarySensor *sensor) { other_navilink_installed_sensor = sensor; }
     void set_error_code_sensor(sensor::Sensor * sensor) { error_code_sensor = sensor; }
     void set_error_level_sensor(sensor::Sensor *sensor) { error_level_sensor = sensor; }
-    void set_water_data_sensor(text_sensor::TextSensor *sensor) { water_data_sensor = sensor; }
-    void set_gas_data_sensor(text_sensor::TextSensor *sensor) { gas_data_sensor = sensor; }
     void set_water_data_hex_sensor(text_sensor::TextSensor *sensor) { water_data_hex_sensor = sensor; }
     void set_gas_data_hex_sensor(text_sensor::TextSensor *sensor) { gas_data_hex_sensor = sensor; }
 
@@ -340,22 +338,6 @@ namespace navien {
      * Helper function to convert recirculation mode enum to string
      */
     static std::string device_recirc_mode_to_str(DEVICE_RECIRC_MODE state);
-
-    /**
-     * Helper function to format water data struct to static buffer (C-style)
-     * buf_out: output buffer (minimum WATER_DATA_BUFFER_SIZE bytes)
-     * buf_len: size of output buffer
-     * Returns: number of bytes written (excluding null terminator)
-     */
-    size_t format_water_data(char *buf_out, size_t buf_len);
-
-    /**
-     * Helper function to format gas data struct to static buffer (C-style)
-     * buf_out: output buffer (minimum GAS_DATA_BUFFER_SIZE bytes)
-     * buf_len: size of output buffer
-     * Returns: number of bytes written (excluding null terminator)
-     */
-    size_t format_gas_data(char *buf_out, size_t buf_len);
 
     /**
      * Helper function to format water data raw hex to static buffer (C-style)

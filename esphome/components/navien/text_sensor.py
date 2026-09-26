@@ -85,11 +85,6 @@ async def to_code(config):
     if config.get(CONF_CONTROLLER_VERSION, False):
         cg.add(paren.set_controller_version_sensor(var))
 
-    if config.get(CONF_WATER_DATA, False):
-        cg.add(paren.set_water_data_sensor(var))
-
-    if config.get(CONF_GAS_DATA, False):
-        cg.add(paren.set_gas_data_sensor(var))
 
     if config.get(CONF_WATER_DATA_HEX, False):
         cg.add(paren.set_water_data_hex_sensor(var))

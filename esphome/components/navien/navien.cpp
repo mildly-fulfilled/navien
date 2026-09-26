@@ -280,8 +280,6 @@ void NavienBase::send_scheduled_recirculation_off_cmd() {
       this->device_type_sensor,
       this->operating_state_sensor,
       this->recirc_mode_sensor,
-      this->water_data_sensor,
-      this->gas_data_sensor,
       this->water_data_hex_sensor,
       this->gas_data_hex_sensor
     };
