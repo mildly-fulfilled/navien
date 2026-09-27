@@ -17,7 +17,7 @@ public:
 protected:
 	
   NavienBase * parent = nullptr;
-  bool dhw_ = true;
+
 public:
   void setup() override;
   void dump_config() override;
