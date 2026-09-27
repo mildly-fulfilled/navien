@@ -28,6 +28,7 @@ async def to_code(config):
      #   var = await climate.new_climate(config)
         var = cg.new_Pvariable(config[CONF_ID])
         await cg.register_component(var, config)
+        await climate.register_climate(var, config)
 
         paren = await cg.get_variable(config[NAVIEN_CONFIG_ID])
         cg.add(var.set_parent(paren))
