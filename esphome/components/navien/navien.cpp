@@ -324,20 +324,44 @@ void NavienBase::send_scheduled_recirculation_off_cmd() {
       this->recirc_running_sensor->publish_state(this->state.water.recirc_running);
     }
 
-#ifdef USE_CLIMATE
+//#ifdef USE_CLIMATE
     // Update the climate control with the current target temperature
-    if (this->climate != nullptr){
-      switch(this->state.power){
-      case POWER_ON:
-        this->climate->mode = climate::ClimateMode::CLIMATE_MODE_HEAT;
-        break;
-      default:
-        this->climate->mode = climate::ClimateMode::CLIMATE_MODE_OFF;
-      }
+//    if (this->climate != nullptr){
+//      switch(this->state.power){
+//      case POWER_ON:
+//        this->climate->mode = climate::ClimateMode::CLIMATE_MODE_HEAT;
+//        break;
+//      default:
+//        this->climate->mode = climate::ClimateMode::CLIMATE_MODE_OFF;
+//      }
 
-      this->climate->current_temperature = this->state.water.outlet_temp;
-      this->climate->target_temperature = this->state.water.dhw_set_temp;
-      this->climate->publish_state();
+//      this->climate->current_temperature = this->state.water.outlet_temp;
+//      this->climate->target_temperature = this->state.water.dhw_set_temp;
+//      this->climate->publish_state();
+//    }
+//#endif
+
+#ifdef USE_CLIMATE
+    switch(this->state.power){
+    case POWER_ON:
+      if (this->power_switch != nullptr)
+        this->power_switch->publish_state(true);
+      for (auto climate : this->climates){
+        if (climate != nullptr){
+          climate->mode = climate::ClimateMode::CLIMATE_MODE_HEAT;
+          climate->publish_state();
+        }
+      }
+      break;
+    default:
+      if (this->power_switch != nullptr)
+        this->power_switch->publish_state(false);
+      for (auto climate : this->climates){
+        if (climate != nullptr){
+          climate->mode = climate::ClimateMode::CLIMATE_MODE_OFF;
+          climate->publish_state();
+        }
+      }
     }
 #endif
 
@@ -402,9 +426,31 @@ void NavienBase::send_scheduled_recirculation_off_cmd() {
 
 #ifdef USE_CLIMATE
     // Update the climate control with the current target temperature
-    if (this->climate != nullptr){
-      this->climate->publish_state();
+    for (auto climate : this->climates) {
+      if (climate != nullptr){
+        auto nc = static_cast<NavienClimate *>(climate);
+        if (nc != nullptr) {
+          switch (nc->dhw_) {
+            case true:
+              climate->current_temperature = this->state.gas.outlet_temp;
+              climate->target_temperature = this->state.gas.dhw_set_temp;
+              climate->publish_state();
+              ESP_LOGD(TAG, "Setting DHW Climate State");
+              break;
+            case false:
+              climate->current_temperature = this->state.gas.sh_outlet_temp;
+              climate->target_temperature = this->state.gas.sh_set_temp;
+              climate->publish_state();
+              ESP_LOGD(TAG, "Setting SH Climate State");
+              break;
+          }
+        }
+      }
     }
+
+ //   if (this->climate != nullptr){
+ //     this->climate->publish_state();
+ //   }
 #endif
   
     if (this->outlet_temp_sensor != nullptr)

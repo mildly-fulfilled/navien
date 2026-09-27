@@ -17,7 +17,7 @@ public:
 protected:
 	
   NavienBase * parent = nullptr;
-  bool dhw_;
+  bool dhw_ = true;
 public:
   void setup() override;
   void dump_config() override;
@@ -30,6 +30,8 @@ public:
    */
   virtual climate::ClimateTraits traits();
   virtual void control(const climate::ClimateCall &call);
+  bool dhw_ = true;
+
 };
 
 } // esphome
