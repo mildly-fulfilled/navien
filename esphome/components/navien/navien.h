@@ -221,7 +221,12 @@ namespace navien {
 #endif
 
 #ifdef USE_CLIMATE
-    void set_climate(climate::Climate * c){climate = c;}
+    // void set_climate(climate::Climate * c){climate = c;}
+    void add_climate(climate::Climate * c){climates.push_back(c);}
+       /**
+     * Gets the list of climate components
+     */
+    const std::list<climate::Climate *>& get_climates() const { return climates; }
 #endif
 
 #ifdef USE_WATER_HEATER
@@ -279,7 +284,8 @@ namespace navien {
 #endif
 
 #ifdef USE_CLIMATE
-    climate::Climate *climate = nullptr;
+    std::list<climate::Climate *> climates;
+    // climate::Climate *climate = nullptr;
 #endif
 
 #ifdef USE_WATER_HEATER
