@@ -54,10 +54,6 @@ CONFIG_SCHEMA = cv.All(
 
             cv.Optional(CONF_CONTROLLER_VERSION): cv.boolean,
 
-            cv.Optional(CONF_WATER_DATA): cv.boolean,
-
-            cv.Optional(CONF_GAS_DATA): cv.boolean,
-
             cv.Optional(CONF_WATER_DATA_HEX): cv.boolean,
 
             cv.Optional(CONF_GAS_DATA_HEX): cv.boolean,
@@ -84,7 +80,6 @@ async def to_code(config):
 
     if config.get(CONF_CONTROLLER_VERSION, False):
         cg.add(paren.set_controller_version_sensor(var))
-
 
     if config.get(CONF_WATER_DATA_HEX, False):
         cg.add(paren.set_water_data_hex_sensor(var))
