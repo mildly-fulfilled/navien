@@ -188,7 +188,7 @@ protected:
    * @param len - the length of buffer
    * @param tries - number of times to send the command
    */
-  void send_cmd(const uint8_t * buffer, uint8_t len, uint8_t tries = 2);
+  void send_cmd(const uint8_t * buffer, uint8_t len, uint8_t tries = 4);
   void on_error();
   
 protected:
@@ -211,7 +211,7 @@ protected:
   bool other_navilink_installed = false;
 
   // Buffer for queued commands.
-  // TODO: add thread safety - cmd_buffer is used in different thread contexts
+  Mutex cmd_buffer_mutex_;
   std::list<NAVIEN_CMD> cmd_buffer;
 };
 

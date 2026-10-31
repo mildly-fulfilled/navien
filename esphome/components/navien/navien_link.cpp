@@ -186,15 +186,27 @@ void NavienLink::receive() {
         }
         ESP_LOGV(TAG, "Got Packet => %d bytes", len + HDR_SIZE);
 
-        if (!this->cmd_buffer.empty()) {
+        uint8_t command_buffer[64];
+        uint8_t command_len = 0;
+        bool has_commands;
+        bool send_command = false;
+        {
+          LockGuard lock(this->cmd_buffer_mutex_);
+          has_commands = !this->cmd_buffer.empty();
           // There are queued commands. Only send when we are sure the bus is clear to avoid collisions.
-          if (!this->other_navilink_installed || std::memcmp(this->recv_buffer.raw_data, NAVILINK_PRESENT, 5) == 0) {
-            NAVIEN_CMD cmd = cmd_buffer.back();
-            cmd_buffer.pop_back();
-            uart->write_array(cmd.buffer, cmd.len);
-            // NavienLink::print_buffer(cmd.buffer, cmd.len);
+          if (has_commands && (!this->other_navilink_installed ||
+                               std::memcmp(this->recv_buffer.raw_data, NAVILINK_PRESENT, 5) == 0)) {
+            const NAVIEN_CMD &cmd = this->cmd_buffer.back();
+            command_len = cmd.len;
+            memcpy(command_buffer, cmd.buffer, command_len);
+            this->cmd_buffer.pop_back();
+            send_command = true;
           }
-        } else {
+        }
+        if (send_command) {
+          uart->write_array(command_buffer, command_len);
+          // NavienLink::print_buffer(command_buffer, command_len);
+        } else if (!has_commands) {
           if (!this->other_navilink_installed) {
             // If there's no pending command, send a NAVILINK_PRESENT packet so the unit knows we're here.
             // When the unit is in an automatic recirculation mode, this tell is that we're controlling 
@@ -220,8 +232,11 @@ void NavienLink::send_cmd(const uint8_t * buffer, uint8_t len, uint8_t tries){
   // Send multiple times by default. In experiments I've noticed
   // that sending once does not always work and that
   // the NaviLink sends the commands multiple times
-  for (uint8_t i = 0; i < tries; i++) {
-    this->cmd_buffer.push_front(NAVIEN_CMD(buffer, len));
+  {
+    LockGuard lock(this->cmd_buffer_mutex_);
+    for (uint8_t i = 0; i < tries; i++) {
+      this->cmd_buffer.push_front(NAVIEN_CMD(buffer, len));
+    }
   }
 }
   
