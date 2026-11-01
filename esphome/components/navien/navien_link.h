@@ -212,7 +212,7 @@ protected:
 
   // Buffer for queued commands.
   Mutex cmd_buffer_mutex_;
-  std::list<NAVIEN_CMD> cmd_buffer;
+  std::vector<NAVIEN_CMD> cmd_buffer;
 };
 
   
