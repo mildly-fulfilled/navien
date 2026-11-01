@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cinttypes>
-#include <list>
 
 #include "esphome/core/helpers.h"
 
@@ -39,6 +38,7 @@ typedef union{
 typedef struct _NAVIEN_CMD{
   uint8_t   buffer[64];
   uint8_t   len;
+  _NAVIEN_CMD() = default;
   _NAVIEN_CMD(const uint8_t * b, uint8_t l) {
     len = std::min(l, static_cast<uint8_t>(sizeof(buffer)));
     memcpy(buffer, b, len);
@@ -211,8 +211,11 @@ protected:
   bool other_navilink_installed = false;
 
   // Buffer for queued commands.
+  static constexpr uint8_t CMD_BUFFER_CAPACITY = 8;
   Mutex cmd_buffer_mutex_;
-  std::vector<NAVIEN_CMD> cmd_buffer;
+  NAVIEN_CMD cmd_buffer_[CMD_BUFFER_CAPACITY];
+  uint8_t cmd_buffer_head_ = 0;
+  uint8_t cmd_buffer_size_ = 0;
 };
 
   
