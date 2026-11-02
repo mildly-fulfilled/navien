@@ -83,6 +83,41 @@ public:
   virtual void on_error()     = 0;
 };
 
+class NavienCmdBufferMutex {
+public:
+  void lock() {
+#ifdef USE_ESP32
+    portENTER_CRITICAL(&mutex_);
+#else
+    mutex_.lock();
+#endif
+  }
+
+  void unlock() {
+#ifdef USE_ESP32
+    portEXIT_CRITICAL(&mutex_);
+#else
+    mutex_.unlock();
+#endif
+  }
+
+private:
+#ifdef USE_ESP32
+  portMUX_TYPE mutex_ = portMUX_INITIALIZER_UNLOCKED;
+#else
+  Mutex mutex_;
+#endif
+};
+
+class NavienCmdBufferLockGuard {
+public:
+  explicit NavienCmdBufferLockGuard(NavienCmdBufferMutex &mutex) : mutex_(mutex) { mutex_.lock(); }
+  ~NavienCmdBufferLockGuard() { mutex_.unlock(); }
+
+private:
+  NavienCmdBufferMutex &mutex_;
+};
+
 
 /**
  * Encapsulates the knowledge of Navien protocol, relies on generalized Uart representation
@@ -212,7 +247,7 @@ protected:
 
   // Buffer for queued commands.
   static constexpr uint8_t CMD_BUFFER_CAPACITY = 8;
-  Mutex cmd_buffer_mutex_;
+  NavienCmdBufferMutex cmd_buffer_mutex_;
   NAVIEN_CMD cmd_buffer_[CMD_BUFFER_CAPACITY];
   uint8_t cmd_buffer_head_ = 0;
   uint8_t cmd_buffer_size_ = 0;

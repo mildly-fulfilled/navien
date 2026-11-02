@@ -191,7 +191,7 @@ void NavienLink::receive() {
         bool has_commands;
         bool send_command = false;
         {
-          LockGuard lock(this->cmd_buffer_mutex_);
+          NavienCmdBufferLockGuard lock(this->cmd_buffer_mutex_);
           has_commands = this->cmd_buffer_size_ > 0;
           // There are queued commands. Only send when we are sure the bus is clear to avoid collisions.
           if (has_commands && (!this->other_navilink_installed ||
@@ -235,7 +235,7 @@ void NavienLink::send_cmd(const uint8_t * buffer, uint8_t len, uint8_t tries){
   // the NaviLink sends the commands multiple times
   uint8_t queued = 0;
   {
-    LockGuard lock(this->cmd_buffer_mutex_);
+    NavienCmdBufferLockGuard lock(this->cmd_buffer_mutex_);
     while (queued < tries && this->cmd_buffer_size_ < CMD_BUFFER_CAPACITY) {
       uint8_t tail = (this->cmd_buffer_head_ + this->cmd_buffer_size_) % CMD_BUFFER_CAPACITY;
       this->cmd_buffer_[tail] = NAVIEN_CMD(buffer, len);
